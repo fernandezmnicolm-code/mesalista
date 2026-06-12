@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Aliado - MesaLista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="dashboard-body">
+
+<!-- Sidebar Overlay (móvil) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand">
+            <i class="fa-solid fa-utensils"></i>
+            <span>MesaLista</span>
+        </a>
+        <button class="sidebar-close d-lg-none" id="sidebarClose">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            <i class="fa-solid fa-store"></i>
+        </div>
+        <div class="user-info">
+            <span class="user-name" sec:authentication="name">aliado@email.com</span>
+            <span class="user-role">Aliado Gastronómico</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a href="/aliado/panel" class="sidebar-link active">
+            <i class="fa-solid fa-house"></i>
+            <span>Resumen</span>
+        </a>
+
+        <div class="nav-section-title">Mi Local</div>
+        <a href="/aliado/local" class="sidebar-link">
+            <i class="fa-solid fa-store"></i>
+            <span>Mi Local</span>
+        </a>
+
+        <div class="nav-section-title">Oferta</div>
+        <a href="/aliado/productos" class="sidebar-link">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Productos y Servicios</span>
+        </a>
+        <a href="/aliado/promociones" class="sidebar-link">
+            <i class="fa-solid fa-tags"></i>
+            <span>Promociones</span>
+        </a>
+
+        <div class="nav-section-title">Clientes</div>
+        <a href="/aliado/reservas" class="sidebar-link">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Reservas</span>
+            <span class="sidebar-badge">3</span>
+        </a>
+        <a href="/aliado/pedidos" class="sidebar-link">
+            <i class="fa-solid fa-basket-shopping"></i>
+            <span>Pedidos</span>
+        </a>
+        <a href="/aliado/solicitudes" class="sidebar-link">
+            <i class="fa-solid fa-bell"></i>
+            <span>Solicitudes</span>
+        </a>
+
+        <div class="nav-section-title">Cuenta</div>
+        <a href="/aliado/perfil" class="sidebar-link">
+            <i class="fa-solid fa-user-pen"></i>
+            <span>Mi Perfil</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Cerrar Sesión</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="dashboard-main">
+
+    <!-- Topbar -->
+    <header class="dashboard-topbar">
+        <button class="topbar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+            <h5 class="mb-0">Panel del Aliado Gastronómico</h5>
+        </div>
+        <div class="topbar-actions">
+            <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine btn-sm rounded-pill px-3 d-none d-md-inline-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Nuevo Producto
+            </a>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="dashboard-content">
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-xmark me-2"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Bienvenida -->
+        <div class="page-header mb-4">
+            <div>
+                <h2 class="page-title">Bienvenido a tu Panel</h2>
+                <p class="page-subtitle text-muted">Gestiona tu local, productos y reservas desde aquí.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine rounded-pill px-4 d-md-none">
+                    <i class="fa-solid fa-plus me-1"></i> Nuevo Producto
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== TARJETAS DE RESUMEN ===== -->
+        <div class="row g-4 mb-5">
+            <div class="col-6 col-md-3">
+                <div class="stat-card stat-card--gold">
+                    <div class="stat-card__icon">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <div class="stat-card__body">
+                        <span class="stat-card__value" th:text="${totalProductos != null ? totalProductos : 0}">0</span>
+                        <span class="stat-card__label">Productos registrados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card stat-card--green">
+                    <div class="stat-card__icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="stat-card__body">
+                        <span class="stat-card__value" th:text="${totalAprobados != null ? totalAprobados : 0}">0</span>
+                        <span class="stat-card__label">Aprobados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card stat-card--orange">
+                    <div class="stat-card__icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-card__body">
+                        <span class="stat-card__value" th:text="${totalPendientes != null ? totalPendientes : 0}">0</span>
+                        <span class="stat-card__label">En revisión</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card stat-card--wine">
+                    <div class="stat-card__icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-card__body">
+                        <span class="stat-card__value">3</span>
+                        <span class="stat-card__label">Reservas activas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- ===== TABLA DE PRODUCTOS ===== -->
+            <div class="col-lg-8">
+                <div class="dash-card">
+                    <div class="dash-card__header">
+                        <div>
+                            <h5 class="dash-card__title">Mis Productos y Servicios</h5>
+                            <p class="dash-card__subtitle">Estado de validación de tu oferta</p>
+                        </div>
+                        <a th:href="@{/aliado/productos}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            Ver todos <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="dash-card__body p-0">
+                        <div th:if="${productos == null or productos.isEmpty()}" class="text-center py-5 text-muted">
+                            <i class="fa-solid fa-box-open fa-3x mb-3 opacity-25"></i>
+                            <p>No tienes productos registrados aún.</p>
+                            <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine rounded-pill px-4">
+                                <i class="fa-solid fa-plus me-2"></i>Registrar primer producto
+                            </a>
+                        </div>
+                        <div th:if="${productos != null and !productos.isEmpty()}" class="table-responsive">
+                            <table class="table dash-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Producto / Servicio</th>
+                                        <th class="d-none d-md-table-cell">Categoría</th>
+                                        <th>Precio</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="p : ${productos}">
+                                        <td>
+                                            <div class="product-thumb">
+                                                <img th:src="${p.imagenUrl != null and !p.imagenUrl.isEmpty() ? p.imagenUrl : 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=100'}"
+                                                     alt="producto" class="product-thumb__img">
+                                                <div>
+                                                    <span class="product-thumb__name" th:text="${p.titulo}">Título</span>
+                                                    <span class="product-thumb__desc d-none d-md-block" th:text="${#strings.abbreviate(p.descripcion, 50)}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="d-none d-md-table-cell">
+                                            <span class="category-pill" th:text="${p.categoria.displayName}">Categoría</span>
+                                        </td>
+                                        <td class="fw-semibold" th:text="'Bs. ' + ${p.precio}">Bs. 0</td>
+                                        <td>
+                                            <span class="status-badge"
+                                                  th:classappend="${p.estadoValidacion.name() == 'APROBADO'} ? 'status-badge--green' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'status-badge--orange' : 'status-badge--red')"
+                                                  th:text="${p.estadoValidacion.name() == 'APROBADO'} ? 'Aprobado' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'En revisión' : 'Rechazado')">
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                <a th:href="@{/aliado/productos/editar/{id}(id=${p.id})}" class="btn-icon btn-icon--edit" title="Editar">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </a>
+                                                <form th:action="@{/aliado/productos/eliminar/{id}(id=${p.id})}" method="post" onsubmit="return confirm('¿Eliminar este producto?')">
+                                                    <button type="submit" class="btn-icon btn-icon--delete" title="Eliminar">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PANEL LATERAL DERECHO ===== -->
+            <div class="col-lg-4">
+
+                <!-- Acciones rápidas -->
+                <div class="dash-card mb-4">
+                    <div class="dash-card__header border-0 pb-0">
+                        <h5 class="dash-card__title">Acciones Rápidas</h5>
+                    </div>
+                    <div class="dash-card__body pt-3">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine rounded-pill py-2">
+                                <i class="fa-solid fa-utensils me-2"></i> Nuevo Producto / Servicio
+                            </a>
+                            <a href="/aliado/promociones/nueva" class="btn btn-outline-gold rounded-pill py-2">
+                                <i class="fa-solid fa-tags me-2"></i> Nueva Promoción
+                            </a>
+                            <a href="/aliado/local" class="btn btn-outline-secondary rounded-pill py-2">
+                                <i class="fa-solid fa-store me-2"></i> Editar mi Local
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solicitudes / Reservas recientes -->
+                <div class="dash-card">
+                    <div class="dash-card__header">
+                        <h5 class="dash-card__title">Reservas Recientes</h5>
+                        <a href="/aliado/reservas" class="text-wine small text-decoration-none">Ver todas</a>
+                    </div>
+                    <div class="dash-card__body p-0">
+                        <!-- Reserva ejemplo 1 -->
+                        <div class="reservation-item">
+                            <div class="reservation-item__info">
+                                <span class="reservation-item__name">Carlos M.</span>
+                                <span class="reservation-item__detail"><i class="fa-solid fa-users me-1"></i>2 personas — 19:00</span>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <span class="status-badge status-badge--orange">Pendiente</span>
+                                <div class="d-flex gap-1">
+                                    <button class="btn-icon btn-icon--edit" title="Aceptar">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--delete" title="Rechazar">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Reserva ejemplo 2 -->
+                        <div class="reservation-item">
+                            <div class="reservation-item__info">
+                                <span class="reservation-item__name">María L.</span>
+                                <span class="reservation-item__detail"><i class="fa-solid fa-users me-1"></i>4 personas — 20:30</span>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <span class="status-badge status-badge--green">Aceptada</span>
+                            </div>
+                        </div>
+                        <!-- Reserva ejemplo 3 -->
+                        <div class="reservation-item">
+                            <div class="reservation-item__info">
+                                <span class="reservation-item__name">Pedro R.</span>
+                                <span class="reservation-item__detail"><i class="fa-solid fa-gift me-1"></i>Cumpleaños — 18:00</span>
+                            </div>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <span class="status-badge status-badge--orange">Pendiente</span>
+                                <div class="d-flex gap-1">
+                                    <button class="btn-icon btn-icon--edit" title="Aceptar">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--delete" title="Rechazar">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 text-center">
+                            <a href="/aliado/reservas" class="text-wine small text-decoration-none fw-semibold">
+                                Ver todas las reservas <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- col derecho -->
+        </div><!-- row -->
+
+    </div><!-- dashboard-content -->
+</div><!-- dashboard-main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

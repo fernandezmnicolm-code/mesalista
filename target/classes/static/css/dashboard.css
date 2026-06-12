@@ -1,0 +1,570 @@
+/* =========================================
+   dashboard.css — Estilos del panel de control
+   ========================================= */
+
+/* Layout general */
+.dashboard-body {
+    background-color: #F5F3EF;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 260px;
+    background-color: #1A1A1A;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1050;
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.sidebar-brand i {
+    color: #D4AF37;
+    font-size: 1.2rem;
+}
+
+.sidebar-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.sidebar-user {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    background-color: #722F37;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-name {
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    color: #D4AF37;
+    font-size: 0.7rem;
+}
+
+/* Navegación sidebar */
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0.75rem;
+}
+
+.nav-section-title {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 1rem 0.75rem 0.4rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    margin-bottom: 2px;
+    font-size: 0.87rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.sidebar-link i {
+    width: 18px;
+    text-align: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(255,255,255,0.07);
+    color: white;
+}
+
+.sidebar-link.active {
+    background-color: #722F37;
+    color: white;
+}
+
+.sidebar-badge {
+    margin-left: auto;
+    background-color: #D4AF37;
+    color: #1A1A1A;
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-footer {
+    padding: 1rem 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.65);
+    border-radius: 0.5rem;
+    font-size: 0.87rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-logout:hover {
+    border-color: #722F37;
+    color: #ff8a80;
+}
+
+/* Overlay móvil */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+}
+
+.sidebar-overlay.active { display: block; }
+
+/* ===== MAIN AREA ===== */
+.dashboard-main {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+/* Topbar */
+.dashboard-topbar {
+    background: white;
+    border-bottom: 1px solid #E8E4DE;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.topbar-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #555;
+    cursor: pointer;
+    display: none;
+    padding: 0.25rem;
+}
+
+.topbar-title { flex: 1; }
+.topbar-title h5 { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+
+.topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+/* Content */
+.dashboard-content {
+    padding: 2rem 1.5rem;
+    flex: 1;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 0.25rem;
+}
+
+.page-subtitle { font-size: 0.88rem; }
+
+/* ===== STAT CARDS ===== */
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-left: 4px solid transparent;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover { transform: translateY(-3px); }
+
+.stat-card__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.stat-card__value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+    display: block;
+}
+
+.stat-card__label {
+    font-size: 0.78rem;
+    color: #888;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.stat-card--gold { border-color: #D4AF37; }
+.stat-card--gold .stat-card__icon { background-color: #FEF9E7; color: #D4AF37; }
+
+.stat-card--green { border-color: #2ecc71; }
+.stat-card--green .stat-card__icon { background-color: #eafaf1; color: #27ae60; }
+
+.stat-card--orange { border-color: #f39c12; }
+.stat-card--orange .stat-card__icon { background-color: #fef9e7; color: #e67e22; }
+
+.stat-card--wine { border-color: #722F37; }
+.stat-card--wine .stat-card__icon { background-color: #fdecea; color: #722F37; }
+
+/* ===== DASH CARDS ===== */
+.dash-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.dash-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #F0EDE8;
+}
+
+.dash-card__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.dash-card__subtitle {
+    font-size: 0.8rem;
+    color: #999;
+    margin: 0.15rem 0 0;
+}
+
+.dash-card__body { padding: 1.5rem; }
+
+/* ===== TABLE ===== */
+.dash-table thead th {
+    background-color: #F8F5EE;
+    color: #555;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid #E8E4DE;
+    white-space: nowrap;
+}
+
+.dash-table tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #F5F3EF;
+    font-size: 0.88rem;
+}
+
+.dash-table tbody tr:last-child td { border-bottom: none; }
+.dash-table tbody tr:hover td { background-color: #FDFBF7; }
+
+/* Product Thumb */
+.product-thumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.product-thumb__img {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #E8E4DE;
+}
+
+.product-thumb__name {
+    font-weight: 600;
+    font-size: 0.88rem;
+    display: block;
+    color: #1A1A1A;
+}
+
+.product-thumb__desc {
+    font-size: 0.76rem;
+    color: #999;
+    display: block;
+}
+
+.motivo-rechazo {
+    display: block;
+    font-size: 0.73rem;
+    color: #e74c3c;
+    margin-top: 0.2rem;
+    background-color: #fff5f5;
+    border-radius: 0.3rem;
+    padding: 0.2rem 0.4rem;
+}
+
+/* Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge--green  { background-color: #eafaf1; color: #27ae60; }
+.status-badge--orange { background-color: #fef9e7; color: #e67e22; }
+.status-badge--red    { background-color: #fdecea; color: #e74c3c; }
+
+.category-pill {
+    background-color: #F0EDE8;
+    color: #6F4E37;
+    font-size: 0.73rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+    white-space: nowrap;
+}
+
+/* Icon buttons */
+.btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 0.5rem;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-icon--edit { background-color: #EEF2FF; color: #3b82f6; }
+.btn-icon--edit:hover { background-color: #3b82f6; color: white; }
+.btn-icon--delete { background-color: #fdecea; color: #e74c3c; }
+.btn-icon--delete:hover { background-color: #e74c3c; color: white; }
+
+/* Buttons */
+.btn-wine {
+    background-color: #722F37;
+    color: white;
+    border: none;
+}
+.btn-wine:hover { background-color: #5a242b; color: white; }
+
+.btn-outline-gold {
+    border: 1.5px solid #D4AF37;
+    color: #6F4E37;
+    background: transparent;
+}
+.btn-outline-gold:hover { background-color: #D4AF37; color: white; }
+
+/* Filter bar */
+.filter-bar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    border: 1.5px solid #E8E4DE;
+    background: white;
+    color: #555;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    border-color: #722F37;
+    color: #722F37;
+    background-color: #fdecea;
+}
+
+/* Reservation items */
+.reservation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid #F5F3EF;
+}
+
+.reservation-item:last-of-type { border-bottom: none; }
+
+.reservation-item__info { display: flex; flex-direction: column; }
+.reservation-item__name { font-weight: 600; font-size: 0.88rem; color: #1A1A1A; }
+.reservation-item__detail { font-size: 0.76rem; color: #999; margin-top: 0.15rem; }
+
+/* Empty state */
+.empty-state { padding: 2rem; }
+.empty-state i { color: #D4AF37; display: block; margin-bottom: 1rem; }
+
+/* Alert soft */
+.alert-soft-wine {
+    background-color: #fdecea;
+    border: 1px solid #f5c6ca;
+    color: #722F37;
+    font-size: 0.85rem;
+}
+
+/* Form controls en dashboard */
+.dashboard-content .form-control,
+.dashboard-content .form-select {
+    border-radius: 0.6rem;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #E8E4DE;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.dashboard-content .form-control:focus,
+.dashboard-content .form-select:focus {
+    border-color: #722F37;
+    box-shadow: 0 0 0 0.2rem rgba(114, 47, 55, 0.15);
+}
+
+/* Input group de precio */
+.input-group-text.bg-wine {
+    background-color: #722F37 !important;
+    border-color: #722F37 !important;
+    color: white !important;
+    border-radius: 0.6rem 0 0 0.6rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .dashboard-main {
+        margin-left: 0;
+    }
+
+    .topbar-toggle {
+        display: block;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-content { padding: 1.25rem 1rem; }
+    .page-title { font-size: 1.35rem; }
+    .stat-card { padding: 1rem; }
+    .stat-card__value { font-size: 1.4rem; }
+}

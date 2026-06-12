@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${local.nombre} + ' - MesaLista'">Local - MesaLista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #FAFAFA; color: #333; }
+        
+        /* Navbar Transparente / Premium */
+        .navbar-premium {
+            background-color: transparent !important;
+            position: absolute;
+            top: 0; width: 100%; z-index: 10;
+            padding: 1rem 0;
+        }
+        .navbar-premium .navbar-brand { color: white !important; font-family: 'Playfair Display', serif; font-size: 1.5rem; }
+        .navbar-premium .btn-login { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; border-radius: 50px; padding: 0.5rem 1.5rem; transition: all 0.3s; }
+        .navbar-premium .btn-login:hover { background: white; color: #1A1A1A; }
+
+        /* Hero Image Cover */
+        .hero-cover {
+            height: 60vh;
+            min-height: 450px;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding-bottom: 3rem;
+        }
+        .hero-content { color: white; }
+        .hero-type { color: #D4AF37; font-size: 0.9rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; line-height: 1.1; margin-bottom: 1rem; }
+        .hero-meta { display: flex; gap: 2rem; font-size: 0.95rem; opacity: 0.9; }
+        .hero-meta i { color: #D4AF37; margin-right: 0.5rem; }
+
+        /* Main Container */
+        .main-container { margin-top: -3rem; position: relative; z-index: 5; }
+
+        /* Tarjeta de Información */
+        .info-card {
+            background: white; border-radius: 1rem; padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 3rem;
+        }
+        .info-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: #1A1A1A; margin-bottom: 1.5rem; }
+        .info-text { font-size: 1rem; color: #555; line-height: 1.8; margin-bottom: 2rem; }
+        
+        .contact-box { background: #F8F9FA; padding: 1.5rem; border-radius: 0.75rem; border-left: 4px solid #722F37; }
+        .contact-item { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .contact-item:last-child { margin-bottom: 0; }
+        .contact-item i { font-size: 1.25rem; color: #722F37; margin-top: 0.2rem; }
+        .contact-text strong { display: block; color: #1A1A1A; font-size: 0.9rem; margin-bottom: 0.2rem; }
+        .contact-text span { color: #666; font-size: 0.9rem; }
+
+        /* Sección de Oferta (Menú) */
+        .section-title { text-align: center; font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: #1A1A1A; margin-bottom: 3rem; }
+        
+        .product-card {
+            background: white; border-radius: 1rem; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            height: 100%; display: flex; flex-direction: column;
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .product-img { width: 100%; height: 220px; object-fit: cover; }
+        .product-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+        .product-cat { font-size: 0.75rem; color: #D4AF37; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+        .product-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #1A1A1A; margin-bottom: 0.5rem; }
+        .product-desc { font-size: 0.85rem; color: #666; flex: 1; margin-bottom: 1.5rem; }
+        .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 1rem; }
+        .product-price { font-weight: 700; color: #722F37; font-size: 1.2rem; }
+        
+        .btn-order { background: #722F37; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 50px; font-size: 0.85rem; transition: background 0.3s; text-decoration: none; }
+        .btn-order:hover { background: #5a242b; color: white; }
+
+        /* Rating visual */
+        .rating-box { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 50px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .rating-stars { color: #D4AF37; }
+        .rating-number { font-weight: 600; color: white; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Transparente -->
+    <nav class="navbar navbar-expand-lg navbar-premium">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fa-solid fa-utensils me-2 text-gold"></i> MesaLista
+            </a>
+            <div class="ms-auto d-flex gap-2">
+                <!-- Mostramos enlace diferente según si está logueado -->
+                <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-login"><i class="fa-regular fa-user me-2"></i>Iniciar Sesión</a>
+                <a sec:authorize="isAuthenticated()" href="/cliente/panel" class="btn btn-login"><i class="fa-solid fa-house me-2"></i>Mi Panel</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero de Portada -->
+    <div class="hero-cover" th:style="'background-image: url(' + (${local.portadaUrl != null and !local.portadaUrl.isEmpty()} ? ${local.portadaUrl} : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000') + ');'">
+        <div class="hero-overlay">
+            <div class="container hero-content">
+                <div class="hero-type" th:text="${local.tipoLocal != null ? local.tipoLocal : 'Local Gastronómico'}">Restaurante</div>
+                <h1 class="hero-title" th:text="${local.nombre}">Nombre del Local</h1>
+                
+                <div class="d-flex flex-wrap align-items-center gap-4 mt-2">
+                    <div class="rating-box">
+                        <div class="rating-stars">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+                        <span class="rating-number">4.8</span>
+                    </div>
+                    <div class="hero-meta">
+                        <span th:if="${local.direccion != null and !local.direccion.isEmpty()}"><i class="fa-solid fa-location-dot"></i> <span th:text="${local.direccion}">Sucre, Bolivia</span></span>
+                        <span th:if="${local.horarios != null and !local.horarios.isEmpty()}"><i class="fa-regular fa-clock"></i> <span th:text="${local.horarios}">Abierto hoy</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <div class="container main-container">
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Tarjeta de Información -->
+                <div class="info-card">
+                    <h2 class="info-title">Nuestra Historia</h2>
+                    <p class="info-text" th:text="${local.descripcion != null and !local.descripcion.isEmpty() ? local.descripcion : 'Ven a disfrutar de la mejor gastronomía en un ambiente único y acogedor. Ofrecemos ingredientes de primera calidad para deleitar tu paladar.'}"></p>
+                    
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-6">
+                            <div class="contact-box h-100">
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                    <div class="contact-text">
+                                        <strong>Ubicación</strong>
+                                        <span th:text="${local.direccion != null ? local.direccion : 'Sucre, Bolivia'}">Sucre</span>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <div class="contact-text">
+                                        <strong>Teléfono</strong>
+                                        <span th:text="${local.telefono != null ? local.telefono : 'No disponible'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="contact-box h-100" style="border-left-color: #D4AF37;">
+                                <div class="contact-item">
+                                    <i class="fa-regular fa-clock" style="color: #D4AF37;"></i>
+                                    <div class="contact-text">
+                                        <strong>Horarios de Atención</strong>
+                                        <span th:text="${local.horarios != null ? local.horarios : 'Consultar horarios'}"></span>
+                                    </div>
+                                </div>
+                                <div class="contact-item mt-3 gap-2 d-flex flex-column">
+                                    <button type="button" class="btn btn-wine w-100 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalReserva">
+                                        <i class="fa-solid fa-calendar-check me-2"></i>Reservar Mesa
+                                    </button>
+                                    <a href="#menu" class="btn btn-outline-dark w-100 rounded-pill">
+                                        <i class="fa-solid fa-utensils me-2"></i>Ver Menú
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú / Oferta -->
+        <div class="py-5" id="menu">
+            <h2 class="section-title">Nuestra Oferta</h2>
+            
+            <div th:if="${productos == null or productos.isEmpty()}" class="text-center py-5">
+                <i class="fa-solid fa-book-open fa-3x text-muted mb-3 opacity-25"></i>
+                <h5 class="text-muted">Próximamente</h5>
+                <p class="text-muted small">El menú se está actualizando. Vuelve pronto.</p>
+            </div>
+
+            <div class="row g-4" th:if="${productos != null and !productos.isEmpty()}">
+                <div class="col-md-6 col-lg-4" th:each="p : ${productos}">
+                    <div class="product-card">
+                        <img th:src="${p.imagenUrl}" alt="Imagen del plato" class="product-img"
+                             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=500';">
+                        <div class="product-body">
+                            <span class="product-cat" th:text="${p.categoria.displayName}">Categoría</span>
+                            <h3 class="product-title" th:text="${p.titulo}">Plato</h3>
+                            <p class="product-desc" th:text="${#strings.abbreviate(p.descripcion, 100)}">Descripción...</p>
+                            <div class="product-footer">
+                                <span class="product-price" th:text="'Bs. ' + ${p.precio}">Bs. 0</span>
+                                <button type="button" class="btn-order" data-bs-toggle="modal" th:data-bs-target="'#modalPedido' + ${p.id}">
+                                    Pedir <i class="fa-solid fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Pedido por Producto -->
+                    <div class="modal fade" th:id="'modalPedido' + ${p.id}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                                <div class="modal-header border-0 bg-light-cream pb-0">
+                                    <h5 class="modal-title font-playfair fw-bold">Pedir: <span th:text="${p.titulo}">Plato</span></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <p class="text-muted small mb-3">Estás solicitando este producto a <strong><span th:text="${local.nombre}">Local</span></strong></p>
+                                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                                        <span class="fw-semibold">Precio Unitario:</span>
+                                        <span class="text-wine fw-bold" th:text="'Bs. ' + ${p.precio}">Bs. 0</span>
+                                    </div>
+                                    <form th:action="@{/cliente/pedidos/crear/{id}(id=${p.id})}" method="post">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold small">Cantidad</label>
+                                            <input type="number" class="form-control" name="cantidad" value="1" min="1" max="20" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label fw-semibold small">Observación (Opcional)</label>
+                                            <textarea class="form-control" name="observacion" rows="2" placeholder="Ej: Sin cebolla, bien cocido..."></textarea>
+                                        </div>
+                                        <div class="d-grid">
+                                            <div sec:authorize="!isAuthenticated()" class="alert alert-warning small text-center mb-2">
+                                                Debes iniciar sesión para solicitar un pedido.
+                                            </div>
+                                            <button type="submit" class="btn btn-wine rounded-pill py-2" sec:authorize="isAuthenticated()">Confirmar Pedido</button>
+                                            <a href="/login" class="btn btn-outline-dark rounded-pill py-2" sec:authorize="!isAuthenticated()">Ir al Login</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- End Container -->
+
+    <!-- Modal de Reserva de Mesa -->
+    <div class="modal fade" id="modalReserva" tabindex="-1" aria-labelledby="modalReservaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="modal-header border-0 bg-light-cream pb-0">
+                    <h5 class="modal-title font-playfair fw-bold" id="modalReservaLabel">Reservar en <span th:text="${local.nombre}">Local</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form th:action="@{/cliente/reservas/nueva/{id}(id=${local.id})}" method="post">
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label for="fechaReserva" class="form-label fw-semibold small">Fecha</label>
+                                <input type="date" class="form-control" id="fechaReserva" name="fechaReserva" required>
+                            </div>
+                            <div class="col-6">
+                                <label for="horaReserva" class="form-label fw-semibold small">Hora</label>
+                                <input type="time" class="form-control" id="horaReserva" name="horaReserva" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidadPersonas" class="form-label fw-semibold small">Cantidad de Personas</label>
+                            <input type="number" class="form-control" id="cantidadPersonas" name="cantidadPersonas" min="1" max="50" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="preferenciaUbicacion" class="form-label fw-semibold small">Preferencia de ubicación</label>
+                            <select class="form-select" id="preferenciaUbicacion" name="preferenciaUbicacion" required>
+                                <option value="" disabled selected>Selecciona una ubicación</option>
+                                <option value="Interior">Interior</option>
+                                <option value="Terraza">Terraza</option>
+                                <option value="Cerca de ventana">Cerca de ventana</option>
+                                <option value="Vista">Vista</option>
+                                <option value="Mesa familiar">Mesa familiar</option>
+                                <option value="Mesa para pareja">Mesa para pareja</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="mensaje" class="form-label fw-semibold small">Mensaje / Peticiones Especiales (Opcional)</label>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="2" placeholder="Ej: Aniversario, mesa cerca a la ventana..."></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <!-- Show warning if not authenticated -->
+                            <div sec:authorize="!isAuthenticated()" class="alert alert-warning small text-center mb-2">
+                                Debes iniciar sesión para poder reservar.
+                            </div>
+                            <button type="submit" class="btn btn-wine rounded-pill py-2" sec:authorize="isAuthenticated()">Confirmar Reserva</button>
+                            <a href="/login" class="btn btn-outline-dark rounded-pill py-2" sec:authorize="!isAuthenticated()">Ir al Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Simple -->
+    <footer class="bg-dark text-white py-4 mt-5 text-center opacity-75">
+        <p class="mb-0 small">&copy; 2026 MesaLista - Descubre Sucre.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const dateInput = document.getElementById('fechaReserva');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+        }
+    </script>
+</body>
+</html>

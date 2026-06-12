@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">MesaLista</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-premium fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fa-solid fa-utensils text-gold me-2"></i>
+                <span class="fw-bold fs-4">MesaLista</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categorias">Categorías</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#destacados">Destacados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#promociones">Promociones</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    <a th:href="@{/login}" class="btn btn-outline-light btn-rounded px-4">Iniciar Sesión</a>
+                    <a th:href="@{/register}" class="btn btn-gold btn-rounded px-4">Registrarse</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section d-flex align-items-center">
+        <div class="container position-relative z-1 text-center text-white">
+            <h1 class="hero-title mb-3">Descubre, reserva y disfruta los mejores locales gastronómicos de Sucre</h1>
+            <p class="hero-subtitle mb-5 mx-auto">Encuentra restaurantes, cafeterías y pastelerías. Aprovecha promociones exclusivas y asegura tu mesa en segundos.</p>
+            
+            <!-- Barra de búsqueda -->
+            <form th:action="@{/locales/buscar}" method="get" class="search-box p-2 bg-white rounded-pill shadow-lg mx-auto d-flex align-items-center">
+                <div class="flex-grow-1 border-end px-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="keyword" list="sugerenciasBusqueda" class="form-control border-0 shadow-none" placeholder="¿Qué se te antoja hoy? (ej. Pizza, Café...)">
+                        <datalist id="sugerenciasBusqueda">
+                            <option value="Restaurantes">
+                            <option value="Cafeterías">
+                            <option value="Pastelerías">
+                            <option value="Promociones">
+                            <option value="La Taverne Sucre">
+                            <option value="Tierra Restaurante">
+                            <option value="El Huerto">
+                            <option value="Pueblo Chico">
+                            <option value="Restaurant Patitos">
+                            <option value="Foresta Restaurante">
+                            <option value="Café Time & Coffee La Recoleta">
+                            <option value="Typica Café Sucre">
+                            <option value="Kaffa Bunn Specialty Coffee">
+                            <option value="Majo Cafetería & Pastelería Artesanal">
+                            <option value="Más Deli">
+                            <option value="Tortas">
+                            <option value="Café">
+                            <option value="Postres">
+                            <option value="San Juan">
+                        </datalist>
+                    </div>
+                </div>
+                <div class="px-3 d-none d-md-block">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="fa-solid fa-location-dot"></i></span>
+                        <input type="text" class="form-control border-0 shadow-none" placeholder="Zona o Barrio">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary-custom rounded-pill px-4 py-2 me-1">Buscar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Categorías Section -->
+    <section id="categorias" class="py-5 bg-light-cream">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Explora por Categorías</h2>
+                <div class="section-divider mx-auto"></div>
+            </div>
+            
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/locales/buscar(categoria='Restaurante')}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none">
+                        <div class="category-icon mb-3 text-wine"><i class="fa-solid fa-bell-concierge fs-1"></i></div>
+                        <h5 class="category-name text-dark">Restaurantes</h5>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/locales/buscar(categoria='Cafetería')}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none">
+                        <div class="category-icon mb-3 text-coffee"><i class="fa-solid fa-mug-hot fs-1"></i></div>
+                        <h5 class="category-name text-dark">Cafeterías</h5>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/locales/buscar(categoria='Pastelería')}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none">
+                        <div class="category-icon mb-3 text-gold"><i class="fa-solid fa-cake-candles fs-1"></i></div>
+                        <h5 class="category-name text-dark">Pastelerías</h5>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/locales/buscar(categoria='Comida Rápida')}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none">
+                        <div class="category-icon mb-3 text-danger"><i class="fa-solid fa-burger fs-1"></i></div>
+                        <h5 class="category-name text-dark">Comida Rápida</h5>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/locales/buscar(categoria='Heladería')}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none">
+                        <div class="category-icon mb-3 text-info"><i class="fa-solid fa-ice-cream fs-1"></i></div>
+                        <h5 class="category-name text-dark">Heladerías</h5>
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a th:href="@{/promociones}" class="category-card d-block p-4 bg-white rounded-4 shadow-sm text-decoration-none border border-gold">
+                        <div class="category-icon mb-3 text-gold"><i class="fa-solid fa-tags fs-1"></i></div>
+                        <h5 class="category-name fw-bold text-dark">Promociones</h5>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destacados Section -->
+    <section id="destacados" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h2 class="section-title text-start mb-0">Locales Destacados</h2>
+                    <div class="section-divider ms-0 mt-2"></div>
+                </div>
+                <a href="#" class="text-wine text-decoration-none fw-semibold">Ver todos <i class="fa-solid fa-arrow-right ms-1"></i></a>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" th:each="local : ${locales}">
+                    <div class="card place-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="card-img-top position-relative" th:style="'height: 220px; background-image: url(' + (${local.portadaUrl != null ? local.portadaUrl : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800'}) + '); background-size: cover; background-position: center;'">
+                            <span class="badge bg-gold position-absolute top-0 end-0 m-3 fs-6">4.5 <i class="fa-solid fa-star ms-1 text-white"></i></span>
+                            <div class="position-absolute bottom-0 start-0 m-3">
+                                <span class="badge bg-wine" th:text="${local.tipoLocal}">Restaurante</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h4 class="card-title fw-bold" th:text="${local.nombre}">Nombre</h4>
+                            <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1 text-wine"></i> <span th:text="${local.direccion}">Dirección</span></p>
+                            <p class="card-text text-secondary mb-3 flex-grow-1" th:text="${local.descripcion}">Descripción...</p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="text-success small fw-bold"><i class="fa-solid fa-door-open me-1"></i> <span th:text="${local.horarios}">Horarios</span></span>
+                                <a th:href="@{/restaurante/{id}(id=${local.id})}" class="btn btn-outline-wine btn-sm rounded-pill px-3">Ver Perfil</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a th:href="@{/locales/buscar}" class="btn btn-primary-custom rounded-pill px-4 py-2">Ver todos los restaurantes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promociones Section -->
+    <section id="promociones" class="py-5 bg-premium text-white position-relative overflow-hidden">
+        <div class="promo-bg-pattern"></div>
+        <div class="container py-4 position-relative z-1">
+            <div class="text-center mb-5">
+                <h2 class="section-title text-white">Promociones del Día</h2>
+                <div class="section-divider bg-gold mx-auto"></div>
+            </div>
+
+            <div class="row g-4">
+                     <div class="col-md-6">
+                      <div class="card bg-transparent border-gold rounded-4 h-100 overflow-hidden promo-card">
+                          <div class="row g-0 h-100">
+                              <div class="col-sm-5" style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80&w=500'); background-size: cover; background-position: center; min-height: 200px;">
+                              </div>
+                              <div class="col-sm-7 d-flex align-items-center">
+                                  <div class="card-body p-4">
+                                      <h3 class="fw-bold text-gold mb-1">Bs 35</h3>
+                                      <h5 class="card-title text-white">Promo San Juan Fast Food</h5>
+                                      <p class="card-text small text-light opacity-75 mb-3">Compra 2 hot dogs o choripanes y recibe una hamburguesa clásica gratis. Válido hasta 24/06.</p>
+                                      <a th:href="@{/locales/buscar(categoria='Comida Rápida')}" class="btn btn-gold btn-sm rounded-pill px-4"><i class="fa-solid fa-gift me-1"></i> Solicitar promoción</a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                <div class="col-md-6">
+                    <div class="card bg-transparent border-gold rounded-4 h-100 overflow-hidden promo-card">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-5" style="background-image: url('https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=500'); background-size: cover; background-position: center; min-height: 200px;">
+                            </div>
+                            <div class="col-sm-7 d-flex align-items-center">
+                                <div class="card-body p-4">
+                                    <h3 class="fw-bold text-gold mb-1">2x1</h3>
+                                    <h5 class="card-title text-white">Café y Masitas</h5>
+                                    <p class="card-text small text-light opacity-75 mb-3">En cafeterías de la zona céntrica por las mañanas de 8:00 a 10:00.</p>
+                                    <a href="#" class="btn btn-gold btn-sm rounded-pill px-4">Ver Detalle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-dark text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row gy-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-utensils text-gold fs-3 me-2"></i>
+                        <span class="fw-bold fs-3 font-playfair">MesaLista</span>
+                    </div>
+                    <p class="text-light opacity-75 small mb-4">La primera plataforma gastronómica exclusiva de Sucre, Bolivia. Conectamos a los mejores locales con los amantes de la buena comida.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-semibold mb-3 text-gold">Explorar</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Restaurantes</a></li>
+                        <li><a href="#">Cafeterías</a></li>
+                        <li><a href="#">Promociones</a></li>
+                        <li><a href="#">Nuevos Locales</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-semibold mb-3 text-gold">Para Locales</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#">Añadir mi local</a></li>
+                        <li><a href="#">Planes y precios</a></li>
+                        <li><a href="#">Recursos</a></li>
+                        <li><a href="#">Soporte</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-semibold mb-3 text-gold">Contacto</h5>
+                    <ul class="list-unstyled text-light opacity-75 small">
+                        <li class="mb-2"><i class="fa-solid fa-location-dot me-2 text-wine"></i> Calle San Alberto #123, Sucre, Bolivia</li>
+                        <li class="mb-2"><i class="fa-solid fa-envelope me-2 text-wine"></i> info@mesalista.com.bo</li>
+                        <li class="mb-2"><i class="fa-solid fa-phone me-2 text-wine"></i> +591 71234567</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary mb-3">
+            <div class="text-center text-light opacity-50 small">
+                &copy; <span th:text="${#dates.year(#dates.createNow())}">2024</span> MesaLista. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script Personalizado -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

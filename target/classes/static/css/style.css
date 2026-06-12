@@ -1,0 +1,271 @@
+/* Variables de Color (Tema Gastronómico) */
+:root {
+    --color-cream: #FDFBF7;
+    --color-light-cream: #F8F5EE;
+    --color-coffee: #6F4E37;
+    --color-coffee-dark: #3E2723;
+    --color-wine: #722F37;
+    --color-wine-dark: #4A154B;
+    --color-gold: #D4AF37;
+    --color-gold-light: #F5E6B3;
+    --color-premium: #1A1A1A;
+}
+
+/* Tipografía */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-cream);
+    color: #333;
+}
+
+.font-playfair {
+    font-family: 'Playfair Display', serif;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Utilidades de color */
+.bg-cream { background-color: var(--color-cream) !important; }
+.bg-light-cream { background-color: var(--color-light-cream) !important; }
+.bg-coffee { background-color: var(--color-coffee) !important; }
+.bg-coffee-dark { background-color: var(--color-coffee-dark) !important; }
+.bg-wine { background-color: var(--color-wine) !important; }
+.bg-gold { background-color: var(--color-gold) !important; }
+.bg-premium { background-color: var(--color-premium) !important; }
+
+.text-coffee { color: var(--color-coffee) !important; }
+.text-wine { color: var(--color-wine) !important; }
+.text-gold { color: var(--color-gold) !important; }
+
+/* Navbar */
+.navbar {
+    transition: all 0.3s ease;
+    padding: 1rem 0;
+}
+
+.navbar.scrolled {
+    padding: 0.5rem 0;
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+.nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.5rem 1rem !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--color-gold) !important;
+}
+
+/* Botones */
+.btn-rounded {
+    border-radius: 50px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-gold {
+    background-color: var(--color-gold);
+    color: var(--color-premium);
+    border: none;
+}
+
+.btn-gold:hover {
+    background-color: #C5A028;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary-custom {
+    background-color: var(--color-wine);
+    color: white;
+    border: none;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--color-wine-dark);
+    color: white;
+}
+
+.btn-outline-wine {
+    border: 1px solid var(--color-wine);
+    color: var(--color-wine);
+}
+
+.btn-outline-wine:hover {
+    background-color: var(--color-wine);
+    color: white;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/sucre-hero.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    padding-top: 80px;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(26,26,26,0.8) 0%, rgba(74,21,75,0.4) 100%);
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    max-width: 700px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.search-box {
+    max-width: 800px;
+}
+
+.search-box input:focus {
+    box-shadow: none;
+}
+
+/* Títulos de Sección */
+.section-title {
+    font-weight: 700;
+    color: var(--color-premium);
+}
+
+.section-divider {
+    height: 3px;
+    width: 60px;
+    background-color: var(--color-wine);
+    margin-top: 10px;
+}
+
+/* Category Cards */
+.category-card {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.category-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--color-gold-light);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+}
+
+/* Place Cards (Destacados) */
+.place-card {
+    transition: all 0.3s ease;
+}
+
+.place-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Promociones */
+.promo-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(212, 175, 55, 0.1) 2px, transparent 2px);
+    background-size: 30px 30px;
+    opacity: 0.5;
+}
+
+.promo-card {
+    transition: all 0.3s ease;
+}
+
+.promo-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+}
+
+/* Footer */
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-gold);
+    padding-left: 5px;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: var(--color-gold);
+    color: var(--color-premium);
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .search-box {
+        border-radius: 1rem !important;
+        flex-direction: column;
+    }
+    
+    .search-box .border-end {
+        border-end: none !important;
+        border-bottom: 1px solid #dee2e6;
+        width: 100%;
+    }
+    
+    .search-box button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}

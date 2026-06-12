@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validaciones - MesaLista Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="dashboard-body admin-theme">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR ADMIN -->
+<aside class="sidebar sidebar--admin" id="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand"><i class="fa-solid fa-shield-halved"></i><span>ML Admin</span></a>
+        <button class="sidebar-close d-lg-none" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar user-avatar--admin"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="user-info">
+            <span class="user-name" sec:authentication="name">admin@mesalista.com</span>
+            <span class="user-role" style="color:#f39c12;">Administrador</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a href="/admin/panel" class="sidebar-link"><i class="fa-solid fa-gauge-high"></i><span>Resumen General</span></a>
+        <div class="nav-section-title">Plataforma</div>
+        <a href="/admin/usuarios" class="sidebar-link"><i class="fa-solid fa-users"></i><span>Usuarios</span></a>
+        <a href="/admin/aliados" class="sidebar-link"><i class="fa-solid fa-store"></i><span>Aliados Gastronómicos</span></a>
+        <div class="nav-section-title">Validación</div>
+        <a href="/admin/validaciones" class="sidebar-link active"><i class="fa-solid fa-clipboard-check"></i><span>Productos Pendientes</span>
+            <span class="sidebar-badge" th:if="${totalPendientes != null and totalPendientes > 0}" th:text="${totalPendientes}">0</span>
+        </a>
+        <a href="/admin/validaciones?estado=RECHAZADO" class="sidebar-link"><i class="fa-solid fa-circle-xmark"></i><span>Rechazados</span></a>
+        <div class="nav-section-title">Moderación</div>
+        <a href="/admin/denuncias" class="sidebar-link"><i class="fa-solid fa-flag"></i><span>Denuncias</span></a>
+        <a href="/admin/seguridad" class="sidebar-link"><i class="fa-solid fa-lock"></i><span>Seguridad</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="/" class="sidebar-link mb-1"><i class="fa-solid fa-globe"></i><span>Ver sitio público</span></a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-logout"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></button>
+        </form>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="dashboard-main">
+    <header class="dashboard-topbar topbar--admin">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title"><h5 class="mb-0">Validación de Productos y Servicios</h5></div>
+    </header>
+
+    <div class="dashboard-content">
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-xmark me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page header -->
+        <div class="page-header mb-4">
+            <div>
+                <h2 class="page-title">Validaciones</h2>
+                <p class="page-subtitle text-muted">Revisa, aprueba o rechaza los productos y servicios de los aliados.</p>
+            </div>
+        </div>
+
+        <!-- Filtros de estado -->
+        <div class="filter-bar mb-4">
+            <a th:href="@{/admin/validaciones(estado='PENDIENTE')}"
+               th:classappend="${estadoFiltro != null and estadoFiltro.name() == 'PENDIENTE'} ? 'active' : ''"
+               class="filter-btn text-decoration-none">
+                <i class="fa-solid fa-hourglass-half me-1 text-warning"></i> Pendientes
+                <span class="badge bg-warning text-dark ms-1" th:if="${totalPendientes != null and totalPendientes > 0}" th:text="${totalPendientes}">0</span>
+            </a>
+            <a th:href="@{/admin/validaciones(estado='APROBADO')}"
+               th:classappend="${estadoFiltro != null and estadoFiltro.name() == 'APROBADO'} ? 'active' : ''"
+               class="filter-btn text-decoration-none">
+                <i class="fa-solid fa-circle-check me-1 text-success"></i> Aprobados
+            </a>
+            <a th:href="@{/admin/validaciones(estado='RECHAZADO')}"
+               th:classappend="${estadoFiltro != null and estadoFiltro.name() == 'RECHAZADO'} ? 'active' : ''"
+               class="filter-btn text-decoration-none">
+                <i class="fa-solid fa-circle-xmark me-1 text-danger"></i> Rechazados
+            </a>
+        </div>
+
+        <!-- Tabla vacía -->
+        <div th:if="${productos == null or productos.isEmpty()}" class="dash-card">
+            <div class="dash-card__body text-center py-5">
+                <i class="fa-solid fa-circle-check fa-3x text-success mb-3 opacity-50"></i>
+                <h5 class="text-muted">No hay productos en este estado</h5>
+                <p class="text-muted small">¡Todo está al día en esta categoría!</p>
+            </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div th:if="${productos != null and !productos.isEmpty()}" class="dash-card">
+            <div class="dash-card__body p-0">
+                <div class="table-responsive">
+                    <table class="table dash-table mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width:35%">Producto / Servicio</th>
+                                <th class="d-none d-lg-table-cell">Aliado</th>
+                                <th class="d-none d-md-table-cell">Categoría</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${productos}">
+                                <td>
+                                    <div class="product-thumb">
+                                        <img th:src="${p.imagenUrl != null and !p.imagenUrl.isEmpty() ? p.imagenUrl : 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=100'}"
+                                             alt="imagen" class="product-thumb__img"
+                                             onerror="this.src='https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=100'">
+                                        <div>
+                                            <span class="product-thumb__name" th:text="${p.titulo}">Título</span>
+                                            <span class="product-thumb__desc" th:text="${#strings.abbreviate(p.descripcion, 55)}"></span>
+                                            <!-- Motivo rechazo (si existe) -->
+                                            <span th:if="${p.motivoRechazo != null and !p.motivoRechazo.isEmpty()}"
+                                                  class="motivo-rechazo">
+                                                <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                                                <span th:text="${p.motivoRechazo}"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-lg-table-cell">
+                                    <div>
+                                        <span class="fw-semibold small" th:text="${p.usuarioOfertante.nombre + ' ' + p.usuarioOfertante.apellido}">Nombre</span>
+                                        <span class="d-block text-muted" style="font-size:0.75rem" th:text="${p.usuarioOfertante.email}">email</span>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <span class="category-pill" th:text="${p.categoria.displayName}">Cat</span>
+                                </td>
+                                <td class="fw-semibold" th:text="'Bs. ' + ${p.precio}">Bs.0</td>
+                                <td>
+                                    <span class="status-badge"
+                                          th:classappend="${p.estadoValidacion.name() == 'APROBADO'} ? 'status-badge--green' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'status-badge--orange' : 'status-badge--red')"
+                                          th:text="${p.estadoValidacion.name() == 'APROBADO'} ? 'Aprobado' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'Pendiente' : 'Rechazado')">
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <!-- Aprobar -->
+                                        <form th:action="@{/admin/validaciones/{id}/aprobar(id=${p.id})}" method="post" sec:authorize="hasRole('ADMINISTRADOR')">
+                                            <button type="submit" class="btn-icon btn-icon--approve" title="Aprobar producto">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <!-- Rechazar (modal) -->
+                                        <button type="button" class="btn-icon btn-icon--reject"
+                                                sec:authorize="hasRole('ADMINISTRADOR')"
+                                                data-bs-toggle="modal" data-bs-target="#modalRechazo"
+                                                th:data-producto-id="${p.id}"
+                                                th:data-producto-nombre="${p.titulo}"
+                                                th:data-motivo-actual="${p.motivoRechazo}"
+                                                title="Rechazar producto">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                        <!-- Ver detalle (modal) -->
+                                        <button type="button" class="btn-icon btn-icon--info"
+                                                data-bs-toggle="modal" data-bs-target="#modalDetalle"
+                                                th:data-titulo="${p.titulo}"
+                                                th:data-descripcion="${p.descripcion}"
+                                                th:data-precio="${p.precio}"
+                                                th:data-categoria="${p.categoria.displayName}"
+                                                th:data-imagen="${p.imagenUrl}"
+                                                th:data-aliado="${p.usuarioOfertante.nombre + ' ' + p.usuarioOfertante.apellido}"
+                                                title="Ver detalle">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- content -->
+</div><!-- main -->
+
+<!-- ===== MODAL RECHAZO ===== -->
+<div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title"><i class="fa-solid fa-circle-xmark me-2"></i>Rechazar Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formRechazo" action="" method="post">
+                <div class="modal-body p-4">
+                    <p class="text-muted mb-3">
+                        Rechazarás: <strong id="nombreProductoRechazo"></strong>.
+                        El aliado podrá ver tu comentario para corregir el problema.
+                    </p>
+                    <label for="motivoRechazo" class="form-label fw-semibold">Motivo de rechazo <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="motivoRechazo" name="motivoRechazo" rows="4"
+                              placeholder="Describe qué debe corregir el aliado. Ej: Imagen inapropiada, precio inválido, descripción incompleta..."
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="fa-solid fa-xmark me-2"></i>Confirmar Rechazo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL DETALLE ===== -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title font-playfair" id="detalleTitulo">Detalle del Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <img id="detalleImagen" src="" alt="imagen"
+                             style="width:100%; height:200px; object-fit:cover; border-radius:0.75rem;">
+                    </div>
+                    <div class="col-md-7">
+                        <p class="mb-2"><span class="text-muted small">Aliado:</span><br><strong id="detalleAliado"></strong></p>
+                        <p class="mb-2"><span class="text-muted small">Categoría:</span><br><span id="detalleCategoria" class="category-pill"></span></p>
+                        <p class="mb-2"><span class="text-muted small">Precio:</span><br><strong id="detallePrecio" class="fs-5 text-wine"></strong></p>
+                        <p class="mb-0"><span class="text-muted small">Descripción:</span><br><span id="detalleDescripcion"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script>
+// Modal rechazo
+document.getElementById('modalRechazo').addEventListener('show.bs.modal', function (e) {
+    const btn = e.relatedTarget;
+    document.getElementById('nombreProductoRechazo').textContent = btn.dataset.productoNombre;
+    document.getElementById('formRechazo').action = '/admin/validaciones/' + btn.dataset.productoId + '/rechazar';
+    document.getElementById('motivoRechazo').value = btn.dataset.motivoActual || '';
+});
+
+// Modal detalle
+document.getElementById('modalDetalle').addEventListener('show.bs.modal', function (e) {
+    const btn = e.relatedTarget;
+    document.getElementById('detalleTitulo').textContent = btn.dataset.titulo;
+    document.getElementById('detalleAliado').textContent = btn.dataset.aliado;
+    document.getElementById('detalleCategoria').textContent = btn.dataset.categoria;
+    document.getElementById('detallePrecio').textContent = 'Bs. ' + btn.dataset.precio;
+    document.getElementById('detalleDescripcion').textContent = btn.dataset.descripcion;
+    const img = btn.dataset.imagen;
+    document.getElementById('detalleImagen').src = img && img.trim() !== ''
+        ? img
+        : 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=600';
+});
+</script>
+</body>
+</html>

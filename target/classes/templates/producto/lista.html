@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Productos - MesaLista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="dashboard-body">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand">
+            <i class="fa-solid fa-utensils"></i>
+            <span>MesaLista</span>
+        </a>
+        <button class="sidebar-close d-lg-none" id="sidebarClose">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-store"></i></div>
+        <div class="user-info">
+            <span class="user-name" sec:authentication="name">aliado@email.com</span>
+            <span class="user-role">Aliado Gastronómico</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a href="/aliado/panel" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Resumen</span></a>
+        <div class="nav-section-title">Mi Local</div>
+        <a href="/aliado/local" class="sidebar-link"><i class="fa-solid fa-store"></i><span>Mi Local</span></a>
+        <div class="nav-section-title">Oferta</div>
+        <a href="/aliado/productos" class="sidebar-link active"><i class="fa-solid fa-book-open"></i><span>Productos y Servicios</span></a>
+        <a href="/aliado/promociones" class="sidebar-link"><i class="fa-solid fa-tags"></i><span>Promociones</span></a>
+        <div class="nav-section-title">Clientes</div>
+        <a href="/aliado/reservas" class="sidebar-link"><i class="fa-solid fa-calendar-check"></i><span>Reservas</span><span class="sidebar-badge">3</span></a>
+        <a href="/aliado/solicitudes" class="sidebar-link"><i class="fa-solid fa-bell"></i><span>Solicitudes</span></a>
+        <div class="nav-section-title">Cuenta</div>
+        <a href="/aliado/perfil" class="sidebar-link"><i class="fa-solid fa-user-pen"></i><span>Mi Perfil</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-logout">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="dashboard-main">
+    <header class="dashboard-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title"><h5 class="mb-0">Mis Productos y Servicios</h5></div>
+        <div class="topbar-actions">
+            <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine btn-sm rounded-pill px-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i><span class="d-none d-md-inline">Nuevo Producto</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="dashboard-content">
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+            <i class="fa-solid fa-circle-xmark me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Page header -->
+        <div class="page-header mb-4">
+            <div>
+                <h2 class="page-title">Productos y Servicios</h2>
+                <p class="page-subtitle text-muted">Gestiona todo lo que ofreces: platos, combos, reservas, eventos y más.</p>
+            </div>
+            <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine rounded-pill px-4 d-none d-md-inline-flex align-items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Nuevo Producto
+            </a>
+        </div>
+
+        <!-- Filtro rápido por estado -->
+        <div class="filter-bar mb-4">
+            <button class="filter-btn active" data-filter="todos">Todos</button>
+            <button class="filter-btn" data-filter="APROBADO">
+                <i class="fa-solid fa-circle-check me-1 text-success"></i> Aprobados
+            </button>
+            <button class="filter-btn" data-filter="PENDIENTE">
+                <i class="fa-solid fa-hourglass-half me-1 text-warning"></i> En revisión
+            </button>
+            <button class="filter-btn" data-filter="RECHAZADO">
+                <i class="fa-solid fa-circle-xmark me-1 text-danger"></i> Rechazados
+            </button>
+        </div>
+
+        <!-- Tabla vacía -->
+        <div th:if="${productos == null or productos.isEmpty()}" class="dash-card">
+            <div class="dash-card__body text-center py-5">
+                <div class="empty-state">
+                    <i class="fa-solid fa-utensils fa-3x mb-3"></i>
+                    <h5>No tienes productos registrados</h5>
+                    <p class="text-muted mb-4">Empieza registrando tu primer plato, combo, servicio o promoción.</p>
+                    <a th:href="@{/aliado/productos/nuevo}" class="btn btn-wine rounded-pill px-5">
+                        <i class="fa-solid fa-plus me-2"></i> Registrar Producto
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div th:if="${productos != null and !productos.isEmpty()}" class="dash-card">
+            <div class="dash-card__body p-0">
+                <div class="table-responsive">
+                    <table class="table dash-table mb-0" id="productosTable">
+                        <thead>
+                            <tr>
+                                <th style="width:40%">Producto / Servicio</th>
+                                <th class="d-none d-md-table-cell">Categoría</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${productos}" th:data-estado="${p.estadoValidacion.name()}">
+                                <td>
+                                    <div class="product-thumb">
+                                        <img th:src="${p.imagenUrl != null and !p.imagenUrl.isEmpty() ? p.imagenUrl : 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=100'}"
+                                             alt="imagen"
+                                             class="product-thumb__img"
+                                             onerror="this.src='https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=100'">
+                                        <div>
+                                            <span class="product-thumb__name" th:text="${p.titulo}">Título</span>
+                                            <span class="product-thumb__desc" th:text="${#strings.abbreviate(p.descripcion, 60)}"></span>
+                                            <!-- Motivo de rechazo -->
+                                            <span th:if="${p.motivoRechazo != null and !p.motivoRechazo.isEmpty()}"
+                                                  class="motivo-rechazo">
+                                                <i class="fa-solid fa-triangle-exclamation me-1"></i>
+                                                <span th:text="${p.motivoRechazo}"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <span class="category-pill" th:text="${p.categoria.displayName}">Categoría</span>
+                                </td>
+                                <td class="fw-semibold text-dark" th:text="'Bs. ' + ${p.precio}">Bs. 0</td>
+                                <td>
+                                    <span class="status-badge"
+                                          th:classappend="${p.estadoValidacion.name() == 'APROBADO'} ? 'status-badge--green' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'status-badge--orange' : 'status-badge--red')"
+                                          th:text="${p.estadoValidacion.name() == 'APROBADO'} ? 'Aprobado' : (${p.estadoValidacion.name() == 'PENDIENTE'} ? 'En revisión' : 'Rechazado')">
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex gap-1 justify-content-center">
+                                        <a th:href="@{/aliado/productos/editar/{id}(id=${p.id})}"
+                                           class="btn-icon btn-icon--edit" title="Editar producto">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <form th:action="@{/aliado/productos/eliminar/{id}(id=${p.id})}" method="post"
+                                              onsubmit="return confirm('¿Eliminar este producto definitivamente?')">
+                                            <button type="submit" class="btn-icon btn-icon--delete" title="Eliminar producto">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- content -->
+</div><!-- main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script>
+// Filtrado por estado en la tabla
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('#productosTable tbody tr').forEach(row => {
+            row.style.display = (filter === 'todos' || row.dataset.estado === filter) ? '' : 'none';
+        });
+    });
+});
+</script>
+</body>
+</html>

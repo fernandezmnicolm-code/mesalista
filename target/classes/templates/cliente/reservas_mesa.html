@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Mesa - MesaLista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <style>
+        .reserva-card {
+            border: 1px solid #E8E4DE; border-radius: 1rem; padding: 1.5rem; background: white; margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+        .reserva-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .reserva-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 1px solid #f5f5f5; padding-bottom: 1rem; }
+        .codigo-box { background: #FEF9E7; border: 1px dashed #D4AF37; padding: 0.75rem 1rem; border-radius: 0.5rem; text-align: center; margin-top: 1rem; }
+        .codigo-texto { font-family: monospace; font-size: 1.2rem; font-weight: bold; color: #722F37; letter-spacing: 2px; }
+    </style>
+</head>
+<body class="dashboard-body">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand"><i class="fa-solid fa-utensils"></i><span>MesaLista</span></a>
+        <button class="sidebar-close d-lg-none" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar" style="background:#3498DB;"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info">
+            <span class="user-name" sec:authentication="name">cliente</span>
+            <span class="user-role" style="color:#3498DB;">Cliente</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a href="/cliente/panel" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Inicio</span></a>
+        <a href="/cliente/buscar" class="sidebar-link"><i class="fa-solid fa-magnifying-glass"></i><span>Explorar</span></a>
+        <div class="nav-section-title">Mis Actividades</div>
+        <a href="/cliente/mis-solicitudes" class="sidebar-link"><i class="fa-solid fa-bag-shopping"></i><span>Mis Pedidos</span></a>
+        <a href="/cliente/reservas" class="sidebar-link active"><i class="fa-solid fa-calendar-check"></i><span>Mis Reservas</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-logout"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></button>
+        </form>
+    </div>
+</aside>
+
+<div class="dashboard-main">
+    <header class="dashboard-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title"><h5 class="mb-0">Mis Reservas de Mesa</h5></div>
+    </header>
+
+    <div class="dashboard-content">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-xmark me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="page-header mb-4">
+            <div>
+                <h2 class="page-title">Mesas Reservadas</h2>
+                <p class="page-subtitle text-muted">Asegura tu lugar en los mejores locales.</p>
+            </div>
+            <a href="/cliente/buscar" class="btn btn-wine rounded-pill px-4"><i class="fa-solid fa-plus me-2"></i>Nueva Reserva</a>
+        </div>
+
+        <div th:if="${reservas == null or reservas.isEmpty()}" class="text-center py-5">
+            <i class="fa-solid fa-calendar-xmark fa-3x text-muted mb-3 opacity-25"></i>
+            <h5 class="text-muted">Aún no tienes reservas.</h5>
+            <a href="/cliente/buscar" class="btn btn-outline-secondary rounded-pill mt-3 px-4">Explorar locales</a>
+        </div>
+
+        <div class="row" th:if="${reservas != null and !reservas.isEmpty()}">
+            <div class="col-lg-8">
+                <div th:each="res : ${reservas}" class="reserva-card">
+                    <div class="reserva-header">
+                        <div>
+                            <h5 class="mt-1 mb-0 fw-bold" th:text="${res.local.nombre}">Restaurante</h5>
+                            <span class="text-muted small"><i class="fa-solid fa-location-dot me-1"></i> <span th:text="${res.local.direccion}">Ubicación</span></span>
+                        </div>
+                        <span class="status-badge"
+                              th:classappend="${res.estadoReserva.name() == 'ACEPTADA'} ? 'status-badge--green' : (${res.estadoReserva.name() == 'PENDIENTE'} ? 'status-badge--orange' : (${res.estadoReserva.name() == 'FINALIZADA'} ? 'status-badge--blue' : 'status-badge--red'))"
+                              th:text="${res.estadoReserva.name()}">
+                        </span>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="text-muted small fw-semibold">Fecha y Hora de Reserva</div>
+                            <div>
+                                <i class="fa-regular fa-calendar me-1"></i> <span th:text="${#temporals.format(res.fechaReserva, 'dd/MM/yyyy')}"></span> 
+                                a las <span th:text="${res.horaReserva}"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small fw-semibold">Personas</div>
+                            <div><i class="fa-solid fa-users me-1"></i> <span th:text="${res.cantidadPersonas}"></span></div>
+                        </div>
+                        <div class="col-12" th:if="${res.mensaje != null and !res.mensaje.isEmpty()}">
+                            <div class="text-muted small fw-semibold">Mensaje enviado</div>
+                            <div class="fst-italic small" th:text="'&quot;' + ${res.mensaje} + '&quot;'"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="codigo-box" th:if="${res.estadoReserva.name() == 'ACEPTADA'}">
+                        <div class="text-muted small mb-1">CÓDIGO DE CONFIRMACIÓN DE MESA</div>
+                        <div class="codigo-texto" th:text="${res.codigoConfirmacion}">ML-XXXXXX</div>
+                        <div class="small text-muted mt-1">Presenta este código al anfitrión al llegar al local.</div>
+                    </div>
+
+                    <div class="text-end mt-3" th:if="${res.estadoReserva.name() == 'PENDIENTE' or res.estadoReserva.name() == 'ACEPTADA'}">
+                        <form th:action="@{/cliente/reservas/{id}/cancelar(id=${res.id})}" method="post" onsubmit="return confirm('¿Estás seguro de cancelar esta reserva de mesa?')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Cancelar Reserva</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

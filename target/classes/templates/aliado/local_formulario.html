@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Local - MesaLista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body class="dashboard-body">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-brand"><i class="fa-solid fa-utensils"></i><span>MesaLista</span></a>
+        <button class="sidebar-close d-lg-none" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar"><i class="fa-solid fa-store"></i></div>
+        <div class="user-info">
+            <span class="user-name" sec:authentication="name">aliado</span>
+            <span class="user-role">Aliado Gastronómico</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a href="/aliado/panel" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Resumen</span></a>
+        <div class="nav-section-title">Mi Local</div>
+        <a href="/aliado/local" class="sidebar-link active"><i class="fa-solid fa-store"></i><span>Mi Local</span></a>
+        <div class="nav-section-title">Oferta</div>
+        <a href="/aliado/productos" class="sidebar-link"><i class="fa-solid fa-book-open"></i><span>Productos y Servicios</span></a>
+        <a href="/aliado/promociones" class="sidebar-link"><i class="fa-solid fa-tags"></i><span>Promociones</span></a>
+        <div class="nav-section-title">Clientes</div>
+        <a href="/aliado/solicitudes" class="sidebar-link"><i class="fa-solid fa-calendar-check"></i><span>Solicitudes/Reservas</span></a>
+        <div class="nav-section-title">Cuenta</div>
+        <a href="/aliado/perfil" class="sidebar-link"><i class="fa-solid fa-user-pen"></i><span>Mi Perfil</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-logout"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></button>
+        </form>
+    </div>
+</aside>
+
+<div class="dashboard-main">
+    <header class="dashboard-topbar">
+        <button class="topbar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-title"><h5 class="mb-0">Configuración del Local</h5></div>
+        <div class="topbar-actions" th:if="${local.id != null}">
+            <a th:href="@{/local/{id}(id=${local.id})}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="fa-solid fa-eye me-1"></i> Ver Perfil Público
+            </a>
+        </div>
+    </header>
+
+    <div class="dashboard-content">
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+            <i class="fa-solid fa-circle-xmark me-2"></i><span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="page-header mb-4">
+            <div>
+                <h2 class="page-title">Información de tu Local</h2>
+                <p class="page-subtitle text-muted">Completa este perfil para que tu restaurante destaque en la página pública.</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="dash-card">
+                    <div class="dash-card__body p-4">
+                        <form th:action="@{/aliado/local}" th:object="${local}" method="post">
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-7">
+                                    <label for="nombre" class="form-label fw-semibold">Nombre del Local</label>
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Ej: La Trattoria Sucre" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="tipoLocal" class="form-label fw-semibold">Tipo de Establecimiento</label>
+                                    <input type="text" class="form-control" id="tipoLocal" th:field="*{tipoLocal}" placeholder="Ej: Restaurante Italiano">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="descripcion" class="form-label fw-semibold">Descripción del Local</label>
+                                <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="4" placeholder="Describe el ambiente, la especialidad de la casa, tu historia..."></textarea>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="direccion" class="form-label fw-semibold">Dirección</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
+                                        <input type="text" class="form-control" id="direccion" th:field="*{direccion}" placeholder="Calle y número">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="telefono" class="form-label fw-semibold">Teléfono de Contacto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                                        <input type="text" class="form-control" id="telefono" th:field="*{telefono}" placeholder="7XXXXXXX">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="horarios" class="form-label fw-semibold">Horarios de Atención</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-regular fa-clock"></i></span>
+                                    <input type="text" class="form-control" id="horarios" th:field="*{horarios}" placeholder="Ej: Lunes a Sábado de 12:00 a 22:30">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="portadaUrl" class="form-label fw-semibold">URL Imagen de Portada</label>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                    <input type="url" class="form-control" id="portadaUrl" th:field="*{portadaUrl}" placeholder="https://ejemplo.com/portada.jpg">
+                                </div>
+                                <div class="form-text">Esta imagen se mostrará en grande en tu página pública. ¡Usa una foto espectacular de tu local o de tu mejor plato!</div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-5">
+                                <button type="submit" class="btn btn-wine rounded-pill px-5 py-2">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Guardar Perfil
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

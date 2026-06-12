@@ -1,0 +1,142 @@
+/* =========================================
+   admin.css — Estilos específicos del panel de administración
+   ========================================= */
+
+/* Tema administrador */
+.admin-theme {
+    background-color: #F8F9FA;
+}
+
+/* Sidebar Admin */
+.sidebar--admin {
+    background-color: #2C3E50;
+}
+
+.sidebar--admin .sidebar-brand {
+    font-family: 'Poppins', sans-serif;
+    color: #ECF0F1;
+}
+
+.sidebar--admin .sidebar-brand i {
+    color: #3498DB;
+}
+
+.user-avatar--admin {
+    background-color: #34495E;
+    color: #3498DB;
+}
+
+/* Topbar Admin */
+.topbar--admin {
+    border-bottom: 1px solid #EAECEE;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+/* Colores Stat Cards Admin */
+.stat-card--blue { border-color: #3498DB; }
+.stat-card--blue .stat-card__icon { background-color: #EBF5FB; color: #3498DB; }
+
+.stat-card--coffee { border-color: #8E44AD; }
+.stat-card--coffee .stat-card__icon { background-color: #F5EEF8; color: #8E44AD; }
+
+/* Botones Admin */
+.btn-admin-primary {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+}
+.btn-admin-primary:hover { background-color: #2980B9; color: white; }
+
+.btn-admin-secondary {
+    background-color: #8E44AD;
+    color: white;
+    border: none;
+}
+.btn-admin-secondary:hover { background-color: #7D3C98; color: white; }
+
+.btn-admin-warning {
+    background-color: #F39C12;
+    color: white;
+    border: none;
+}
+.btn-admin-warning:hover { background-color: #D68910; color: white; }
+
+.text-admin { color: #3498DB; }
+
+/* Tabla de usuarios */
+.user-thumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-thumb__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.avatar--admin { background-color: #34495E; color: #F39C12; }
+.avatar--aliado { background-color: #8E44AD; }
+.avatar--cliente { background-color: #3498DB; }
+
+.status-badge--admin { background-color: #FEF9E7; color: #F39C12; }
+.status-badge--coffee { background-color: #F5EEF8; color: #8E44AD; }
+.status-badge--blue { background-color: #EBF5FB; color: #3498DB; }
+
+/* Acciones en tabla */
+.btn-icon--approve { background-color: #EAF2F8; color: #2ecc71; }
+.btn-icon--approve:hover { background-color: #2ecc71; color: white; }
+
+.btn-icon--reject { background-color: #FDEDEC; color: #e74c3c; }
+.btn-icon--reject:hover { background-color: #e74c3c; color: white; }
+
+.btn-icon--info { background-color: #EBF5FB; color: #3498DB; }
+.btn-icon--info:hover { background-color: #3498DB; color: white; }
+
+.btn-icon--suspend { background-color: #FEF9E7; color: #F39C12; }
+.btn-icon--suspend:hover { background-color: #F39C12; color: white; }
+
+/* User row en tarjeta de admin */
+.user-row {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #F8F9FA;
+}
+.user-row:last-child { border-bottom: none; }
+
+.user-row__avatar {
+    width: 36px;
+    height: 36px;
+    background-color: #EAECEE;
+    color: #7F8C8D;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+}
+
+.user-row__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-row__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2C3E50;
+}
+
+.user-row__email {
+    font-size: 0.75rem;
+    color: #95A5A6;
+}
